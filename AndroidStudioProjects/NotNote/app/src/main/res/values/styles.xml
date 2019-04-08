@@ -1,0 +1,17 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">#F00</item>
+    </style>
+
+    <style name="dividerBase">
+    </style>
+
+    <style name="dividerHorizontalBrown" parent="dividerBase">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item> // You can change thickness here.
+        <item name="android:background">#A4A4A4</item> //you can give your color here. that will change all divider color in your app.
+    </style>
+
+</resources>

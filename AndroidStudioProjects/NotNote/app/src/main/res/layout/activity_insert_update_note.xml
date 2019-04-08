@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.example.notnote.model.Note"/>
+    </data>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".app.InsertUpdateNoteActivity"
+        android:background="@drawable/gradient_background"
+        >
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="INSERT NOTE"
+            android:textColor="@color/colorWhite"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/form"
+            />
+
+        <LinearLayout
+            android:id="@+id/form"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/title"
+            android:orientation="vertical"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Title"
+                android:textSize="17sp"
+                android:textColor="@color/colorWhite"
+                />
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:text="@={viewModel.title}"
+                android:inputType="text"
+                android:textColor="@color/colorWhite"
+                android:textCursorDrawable="@null"
+                android:drawableLeft="@drawable/ic_title"
+                android:drawablePadding="10dp"
+                android:backgroundTint="@color/colorWhite"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Description"
+                android:textSize="17sp"
+                android:textColor="@color/colorWhite"
+                />
+
+            <EditText
+                android:gravity="top"
+                android:paddingTop="2dp"
+                android:paddingLeft="5dp"
+                android:paddingRight="2dp"
+                android:paddingBottom="2dp"
+                android:textColor="@color/colorWhite"
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:text="@={viewModel.description}"
+                android:inputType="textMultiLine"
+                android:textCursorDrawable="@null"
+                android:background="@drawable/custom_textarea" />
+
+            <Button
+                android:id="@+id/btnSave"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:layout_gravity="center"
+                android:background="@android:color/transparent"
+                android:text="INSERT"
+                android:textColor="@color/colorWhite"
+                />
+
+        </LinearLayout>
+
+
+
+    </android.support.constraint.ConstraintLayout>
+</layout>

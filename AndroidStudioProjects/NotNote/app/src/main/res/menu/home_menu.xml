@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/menuFood"
+        android:title="Food"
+        android:icon="@drawable/ic_free_breakfast"
+        />
+
+    <item
+        android:id="@+id/menuTodo"
+        android:title="To-do"
+        android:icon="@drawable/ic_description"
+        />
+
+    <item
+        android:id="@+id/menuSecret"
+        android:title="Secret"
+        android:icon="@drawable/ic_person"
+        />
+
+    <item
+        android:id="@+id/menuOthers"
+        android:title="Others"
+        android:icon="@drawable/ic_inbox"
+        />
+</menu>
