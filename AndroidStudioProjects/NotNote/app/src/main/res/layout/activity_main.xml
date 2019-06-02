@@ -24,6 +24,33 @@
             app:layout_constraintBottom_toTopOf="@+id/bnHome"
             >
 
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            </android.support.v7.widget.RecyclerView>
+
+            <pl.droidsonroids.gif.GifImageView
+                android:id="@+id/loading"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/loading"
+                android:layout_centerInParent="true"
+                android:visibility="gone"
+                />
+
+            <TextView
+                android:id="@+id/noData"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="No Data"
+                android:textColor="@color/colorBlack"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:layout_centerInParent="true"
+                android:visibility="gone"
+                />
+
             <android.support.design.widget.FloatingActionButton
                 android:id="@+id/fabAdd"
                 android:layout_width="wrap_content"
@@ -33,7 +60,7 @@
                 android:layout_alignParentBottom="true"
                 android:layout_margin="10dp"
                 android:src="@drawable/ic_add"
-                android:backgroundTint="@color/colorRed"
+                android:backgroundTint="@color/colorAccent"
                 />
         </RelativeLayout>
 

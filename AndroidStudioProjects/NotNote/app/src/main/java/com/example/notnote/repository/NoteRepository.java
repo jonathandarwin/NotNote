@@ -7,7 +7,17 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
+import com.example.notnote.common.APIHandler;
+import com.example.notnote.common.APIRoute;
 import com.example.notnote.model.Note;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -133,5 +143,36 @@ public class NoteRepository extends SQLiteOpenHelper {
         }
         db.close();
         return true;
+    }
+
+    public void getCategory(String note, final APIHandler listener){
+        JSONObject param = new JSONObject();
+        try{
+            param.put("note", note);
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest request = new JsonObjectRequest(
+                Request.Method.POST,
+                APIRoute.API_GET_CATEGORY,
+                param,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        listener.onSuccess(response);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        listener.onError(error.getMessage());
+                    }
+                }
+        );
+
+        RequestQueue requestQueue = Volley.newRequestQueue(mContext);
+        requestQueue.add(request);
     }
 }

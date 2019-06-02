@@ -17,10 +17,4 @@
         android:title="Secret"
         android:icon="@drawable/ic_person"
         />
-
-    <item
-        android:id="@+id/menuOthers"
-        android:title="Others"
-        android:icon="@drawable/ic_inbox"
-        />
 </menu>

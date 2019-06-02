@@ -4,7 +4,6 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.databinding.DataBindingUtil;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
@@ -12,47 +11,53 @@ import android.widget.Toast;
 import com.example.notnote.R;
 import com.example.notnote.common.BaseActivity;
 import com.example.notnote.databinding.ActivityInsertUpdateNoteBinding;
-import com.example.notnote.factory.NoteViewModelFactory;
+import com.example.notnote.factory.ViewModelFactory;
 import com.example.notnote.model.Note;
-import com.example.notnote.viewmodel.NoteViewModel;
+import com.example.notnote.viewmodel.InsertUpdateNoteViewModel;
 
-public class InsertUpdateNoteActivity extends BaseActivity implements View.OnClickListener{
+public class InsertUpdateNoteActivity extends BaseActivity<InsertUpdateNoteViewModel, ActivityInsertUpdateNoteBinding> implements View.OnClickListener{
 
-    ActivityInsertUpdateNoteBinding binding;
     Note note;
     String type;
-    NoteViewModel viewModel;
+
+    public InsertUpdateNoteActivity(){
+        super(InsertUpdateNoteViewModel.class, R.layout.activity_insert_update_note);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_insert_update_note);
         getData();
         setListener();
-        binding.setViewModel(note);
-        viewModel = ViewModelProviders.of(this, new NoteViewModelFactory(getApplication())).get(NoteViewModel.class);
+        getBinding().setViewModel(note);
     }
 
     @Override
     public void onClick(View v) {
-        if(v.equals(binding.btnSave)){
-            note = binding.getViewModel();
-            if(type.equals("INSERT")){
-                viewModel.insert(note).observe(InsertUpdateNoteActivity.this, new Observer<Boolean>() {
-                    @Override
-                    public void onChanged(@Nullable Boolean aBoolean) {
-                        checkResponse(aBoolean);
+        if(v.equals(getBinding().btnSave)){
+            note = getBinding().getViewModel();
+            getViewModel().getCategory(note).observe(InsertUpdateNoteActivity.this, new Observer<String>() {
+                @Override
+                public void onChanged(@Nullable String s) {
+                    note.setCategory(s);
+                    if(type.equals("INSERT")){
+                        getViewModel().insert(note).observe(InsertUpdateNoteActivity.this, new Observer<Boolean>() {
+                            @Override
+                            public void onChanged(@Nullable Boolean aBoolean) {
+                                checkResponse(aBoolean);
+                            }
+                        });
                     }
-                });
-            }
-            else{
-                viewModel.update(note).observe(InsertUpdateNoteActivity.this, new Observer<Boolean>() {
-                    @Override
-                    public void onChanged(@Nullable Boolean aBoolean) {
-                        checkResponse(aBoolean);
+                    else{
+                        getViewModel().update(note).observe(InsertUpdateNoteActivity.this, new Observer<Boolean>() {
+                            @Override
+                            public void onChanged(@Nullable Boolean aBoolean) {
+                                checkResponse(aBoolean);
+                            }
+                        });
                     }
-                });
-            }
+                }
+            });
         }
     }
 
@@ -69,13 +74,13 @@ public class InsertUpdateNoteActivity extends BaseActivity implements View.OnCli
         note = (Note) getIntent().getSerializableExtra("note");
         type = getIntent().getStringExtra("type");
         if(type.equals("UPDATE")){
-            binding.btnSave.setText("UPDATE");
-            binding.title.setText("UPDATE NOTE");
+            getBinding().btnSave.setText("UPDATE");
+            getBinding().title.setText("UPDATE NOTE");
         }
     }
 
     private void setListener()
     {
-        binding.btnSave.setOnClickListener(this);
+        getBinding().btnSave.setOnClickListener(this);
     }
 }

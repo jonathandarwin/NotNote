@@ -3,14 +3,13 @@ package com.example.notnote.adapter;
 import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.notnote.R;
-import com.example.notnote.app.FoodFragment;
+import com.example.notnote.app.MainActivity;
 import com.example.notnote.common.CustomCalendar;
 import com.example.notnote.databinding.ListNoteItemBinding;
 import com.example.notnote.model.Note;
@@ -20,12 +19,10 @@ import java.util.List;
 public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
 
     Context context;
-    Fragment fragment;
     List<Note> listNote;
 
-    public NoteAdapter(Context context, Fragment fragment, List<Note> listNote){
+    public NoteAdapter(Context context, List<Note> listNote){
         this.context = context;
-        this.fragment = fragment;
         this.listNote = listNote;
     }
 
@@ -65,14 +62,14 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.ViewHolder> {
         viewHolder.binding.edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((FoodFragment) fragment).editNote(note);
+                ((MainActivity) context).editNote(note);
             }
         });
 
         viewHolder.binding.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((FoodFragment) fragment).deleteNote(note, i);
+                ((MainActivity) context).deleteNote(note, i);
             }
         });
     }

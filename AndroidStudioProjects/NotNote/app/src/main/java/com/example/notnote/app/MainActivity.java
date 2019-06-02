@@ -1,64 +1,81 @@
 package com.example.notnote.app;
 
+import android.app.Dialog;
+import android.arch.lifecycle.Observer;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
-import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
 import android.view.MenuItem;
 import android.view.View;
-
+import android.widget.Toast;
 import com.example.notnote.R;
+import com.example.notnote.adapter.NoteAdapter;
+import com.example.notnote.common.BaseActivity;
 import com.example.notnote.databinding.ActivityMainBinding;
 import com.example.notnote.model.Note;
+import com.example.notnote.viewmodel.MainViewModel;
 
-public class MainActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
+import java.util.ArrayList;
+import java.util.List;
 
-    ActivityMainBinding binding;
+public class MainActivity extends BaseActivity<MainViewModel, ActivityMainBinding> implements BottomNavigationView.OnNavigationItemSelectedListener, View.OnClickListener {
+
+    NoteAdapter adapter;
+    List<Note> listNote;
+
+    public MainActivity(){
+        super(MainViewModel.class, R.layout.activity_main);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        initAdapter();
         setListener();
-
-        getSupportFragmentManager().beginTransaction().replace(R.id.layout_home, new FoodFragment()).commit();
+        getNoteByCategory("food");
     }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-        Fragment fragment = new Fragment();
+        String category = "";
         switch(menuItem.getItemId()){
             case R.id.menuFood:
-                fragment = new FoodFragment();
+                category = "food";
                 break;
             case R.id.menuTodo:
-                fragment = new FoodFragment();
+                category = "todo";
                 break;
             case R.id.menuSecret:
-                fragment = new FoodFragment();
-                break;
-            case R.id.menuOthers:
-                fragment = new FoodFragment();
+                category = "secret";
                 break;
         }
-
-        getSupportFragmentManager().beginTransaction().replace(R.id.layout_home, fragment).commit();
+        getNoteByCategory(category);
         return true;
     }
 
     @Override
     public void onClick(View v) {
-        if(v.equals(binding.fabAdd)){
+        if(v.equals(getBinding().fabAdd)){
             gotoInsertUpdateNoteIntent(new Note());
         }
     }
 
     private void setListener()
     {
-        binding.fabAdd.setOnClickListener(this);
+        getBinding().fabAdd.setOnClickListener(this);
+    }
+
+    private void initAdapter(){
+        listNote = new ArrayList<>();
+        adapter = new NoteAdapter(this, listNote);
+        getBinding().recyclerView.setHasFixedSize(true);
+        getBinding().recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        getBinding().recyclerView.setAdapter(adapter);
     }
 
     private void gotoInsertUpdateNoteIntent(Note note)
@@ -67,5 +84,49 @@ public class MainActivity extends AppCompatActivity implements BottomNavigationV
         intent.putExtra("type", "INSERT");
         intent.putExtra("note", note);
         startActivity(intent);
+    }
+
+    private void getNoteByCategory(String category){
+        getViewModel().getByCategory(category).observe(this, new Observer<List<Note>>() {
+            @Override
+            public void onChanged(@Nullable List<Note> notes) {
+                if(notes.size() > 0){
+                    listNote.clear();
+                    listNote.addAll(notes);
+                    adapter.notifyDataSetChanged();
+                }
+            }
+        });
+    }
+
+    public void editNote(Note note){
+        gotoInsertUpdateNoteIntent(note);
+    }
+
+    public void deleteNote(final Note note, final int i){
+        AlertDialog.Builder dialog = createDialogConfirmation("Delete \"" + note.getTitle() + "\"", "Are you sure?");
+
+        dialog.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                getViewModel().delete(note.getNoteId()).observe(MainActivity.this, new Observer<Boolean>() {
+                    @Override
+                    public void onChanged(@Nullable Boolean aBoolean) {
+                        if(aBoolean){
+                            Toast.makeText(getApplicationContext(), "DELETE SUCCESS", Toast.LENGTH_SHORT).show();
+                            listNote.remove(i);
+                            adapter.notifyItemRemoved(i);
+                            adapter.notifyItemRangeChanged(i, 1);
+                        }
+                        else{
+                            Toast.makeText(getApplicationContext(), "Error. Please try again.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            }
+        });
+
+        dialog.setNegativeButton("No", null);
+        dialog.show();
     }
 }

@@ -4,28 +4,27 @@ import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
+import android.content.Context;
 import android.widget.Toast;
 
+import com.example.notnote.common.APIHandler;
 import com.example.notnote.common.CustomCalendar;
 import com.example.notnote.model.Note;
 import com.example.notnote.repository.NoteRepository;
 
+import org.json.JSONObject;
+
 import java.util.List;
 import java.util.prefs.AbstractPreferences;
 
-public class NoteViewModel extends ViewModel {
+public class InsertUpdateNoteViewModel extends ViewModel {
 
-    Application application;
+    Context context;
+    NoteRepository repo;
 
-    public NoteViewModel(Application application){
-        this.application = application;
-    }
-
-    public LiveData<List<Note>> getByCategory(String category){
-        MutableLiveData<List<Note>> result = new MutableLiveData<>();
-        NoteRepository repo = new NoteRepository(application);
-        result.setValue(repo.getByCategory(category));
-        return result;
+    public InsertUpdateNoteViewModel(Context context){
+        this.context= context;
+        repo = new NoteRepository(context);
     }
 
     public LiveData<Boolean> insert(Note note){
@@ -34,7 +33,6 @@ public class NoteViewModel extends ViewModel {
             note.setAuditedTime(CustomCalendar.GetCurrentDate());
             // INI NANTI DIHAPUS
             note.setCategory("food");
-            NoteRepository repo = new NoteRepository(application);
             result.setValue(repo.insert(note));
         }
         else{
@@ -49,7 +47,6 @@ public class NoteViewModel extends ViewModel {
             note.setAuditedTime(CustomCalendar.GetCurrentDate());
             // INI NANTI DIHAPUS
             note.setCategory("food");
-            NoteRepository repo = new NoteRepository(application);
             result.setValue(repo.update(note));
         }
         else{
@@ -58,19 +55,35 @@ public class NoteViewModel extends ViewModel {
         return result;
     }
 
-    public LiveData<Boolean> delete(int IDNote){
-        MutableLiveData<Boolean> result = new MutableLiveData<>();
-        NoteRepository repo = new NoteRepository(application);
-        result.setValue(repo.delete(IDNote));
-        return result;
-    }
-
     private boolean checkInput(Note note){
         if(note.getTitle() == null || note.getTitle().equals("") ||
             note.getDescription() == null || note.getDescription().equals("")){
-            Toast.makeText(application, "Please input title and description!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(context, "Please input title and description!", Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;
+    }
+
+    public LiveData<String> getCategory(Note note){
+        final MutableLiveData<String> result = new MutableLiveData<>();
+        String param = note.getTitle() + " " + note.getDescription();
+        repo.getCategory(param, new APIHandler() {
+            @Override
+            public void onSuccess(JSONObject response) {
+                try{
+                    result.setValue(response.get("result").toString());
+                }
+                catch(Exception e){
+                    result.setValue("");
+                }
+            }
+
+            @Override
+            public void onError(String error) {
+                result.setValue("");
+            }
+        });
+
+        return result;
     }
 }
