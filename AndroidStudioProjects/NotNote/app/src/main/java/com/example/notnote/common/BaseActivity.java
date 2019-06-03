@@ -19,6 +19,7 @@ import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 
 import com.example.notnote.R;
+import com.example.notnote.factory.ViewModelFactory;
 
 public class BaseActivity<VM extends ViewModel, DataBinding extends ViewDataBinding> extends AppCompatActivity {
     protected Dialog dialog;
@@ -41,9 +42,8 @@ public class BaseActivity<VM extends ViewModel, DataBinding extends ViewDataBind
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getSupportActionBar().hide();
         this.binding = DataBindingUtil.setContentView(this, layout);
-        this.viewModel = ViewModelProviders.of(this).get(vm);
+        this.viewModel = ViewModelProviders.of(this, new ViewModelFactory(this)).get(vm);
 
         dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);

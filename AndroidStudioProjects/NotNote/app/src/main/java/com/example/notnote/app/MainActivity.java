@@ -1,6 +1,5 @@
 package com.example.notnote.app;
 
-import android.app.Dialog;
 import android.arch.lifecycle.Observer;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -37,7 +36,6 @@ public class MainActivity extends BaseActivity<MainViewModel, ActivityMainBindin
         super.onCreate(savedInstanceState);
         initAdapter();
         setListener();
-        getNoteByCategory("food");
     }
 
     @Override
@@ -61,13 +59,22 @@ public class MainActivity extends BaseActivity<MainViewModel, ActivityMainBindin
     @Override
     public void onClick(View v) {
         if(v.equals(getBinding().fabAdd)){
-            gotoInsertUpdateNoteIntent(new Note());
+            gotoInsertNoteIntent(new Note());
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        listNote.clear();
+        adapter.notifyDataSetChanged();
+        getNoteByCategory("food");
     }
 
     private void setListener()
     {
         getBinding().fabAdd.setOnClickListener(this);
+        getBinding().bnHome.setOnNavigationItemSelectedListener(this);
     }
 
     private void initAdapter(){
@@ -78,10 +85,18 @@ public class MainActivity extends BaseActivity<MainViewModel, ActivityMainBindin
         getBinding().recyclerView.setAdapter(adapter);
     }
 
-    private void gotoInsertUpdateNoteIntent(Note note)
+    private void gotoInsertNoteIntent(Note note)
     {
         Intent intent = new Intent(this, InsertUpdateNoteActivity.class);
         intent.putExtra("type", "INSERT");
+        intent.putExtra("note", note);
+        startActivity(intent);
+    }
+
+    private void gotoUpdateNoteIntent(Note note)
+    {
+        Intent intent = new Intent(this, InsertUpdateNoteActivity.class);
+        intent.putExtra("type", "UPDATE");
         intent.putExtra("note", note);
         startActivity(intent);
     }
@@ -90,17 +105,17 @@ public class MainActivity extends BaseActivity<MainViewModel, ActivityMainBindin
         getViewModel().getByCategory(category).observe(this, new Observer<List<Note>>() {
             @Override
             public void onChanged(@Nullable List<Note> notes) {
+                listNote.clear();
                 if(notes.size() > 0){
-                    listNote.clear();
                     listNote.addAll(notes);
-                    adapter.notifyDataSetChanged();
                 }
+                adapter.notifyDataSetChanged();
             }
         });
     }
 
     public void editNote(Note note){
-        gotoInsertUpdateNoteIntent(note);
+        gotoUpdateNoteIntent(note);
     }
 
     public void deleteNote(final Note note, final int i){

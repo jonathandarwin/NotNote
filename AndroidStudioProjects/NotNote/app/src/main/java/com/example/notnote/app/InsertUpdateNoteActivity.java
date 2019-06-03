@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.databinding.DataBindingUtil;
 import android.support.annotation.Nullable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -39,22 +40,24 @@ public class InsertUpdateNoteActivity extends BaseActivity<InsertUpdateNoteViewM
             getViewModel().getCategory(note).observe(InsertUpdateNoteActivity.this, new Observer<String>() {
                 @Override
                 public void onChanged(@Nullable String s) {
-                    note.setCategory(s);
-                    if(type.equals("INSERT")){
-                        getViewModel().insert(note).observe(InsertUpdateNoteActivity.this, new Observer<Boolean>() {
-                            @Override
-                            public void onChanged(@Nullable Boolean aBoolean) {
-                                checkResponse(aBoolean);
-                            }
-                        });
-                    }
-                    else{
-                        getViewModel().update(note).observe(InsertUpdateNoteActivity.this, new Observer<Boolean>() {
-                            @Override
-                            public void onChanged(@Nullable Boolean aBoolean) {
-                                checkResponse(aBoolean);
-                            }
-                        });
+                    if(!s.equals("")){
+                        note.setCategory(s);
+                        if(type.equals("INSERT")){
+                            getViewModel().insert(note).observe(InsertUpdateNoteActivity.this, new Observer<Boolean>() {
+                                @Override
+                                public void onChanged(@Nullable Boolean aBoolean) {
+                                    checkResponse(aBoolean);
+                                }
+                            });
+                        }
+                        else{
+                            getViewModel().update(note).observe(InsertUpdateNoteActivity.this, new Observer<Boolean>() {
+                                @Override
+                                public void onChanged(@Nullable Boolean aBoolean) {
+                                    checkResponse(aBoolean);
+                                }
+                            });
+                        }
                     }
                 }
             });

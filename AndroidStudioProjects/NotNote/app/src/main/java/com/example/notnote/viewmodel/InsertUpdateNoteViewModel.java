@@ -31,8 +31,6 @@ public class InsertUpdateNoteViewModel extends ViewModel {
         MutableLiveData<Boolean> result = new MutableLiveData<>();
         if(checkInput(note)){
             note.setAuditedTime(CustomCalendar.GetCurrentDate());
-            // INI NANTI DIHAPUS
-            note.setCategory("food");
             result.setValue(repo.insert(note));
         }
         else{
@@ -45,8 +43,6 @@ public class InsertUpdateNoteViewModel extends ViewModel {
         MutableLiveData<Boolean> result = new MutableLiveData<>();
         if(checkInput(note)){
             note.setAuditedTime(CustomCalendar.GetCurrentDate());
-            // INI NANTI DIHAPUS
-            note.setCategory("food");
             result.setValue(repo.update(note));
         }
         else{

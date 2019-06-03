@@ -161,12 +161,14 @@ public class NoteRepository extends SQLiteOpenHelper {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
+                        Log.d("<RES>", "<RES> " + response.toString());
                         listener.onSuccess(response);
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        Log.d("<ERR>", "<ERR> " + error.getMessage());
                         listener.onError(error.getMessage());
                     }
                 }
