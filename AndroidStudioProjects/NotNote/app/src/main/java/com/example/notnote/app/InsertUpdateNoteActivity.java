@@ -37,6 +37,7 @@ public class InsertUpdateNoteActivity extends BaseActivity<InsertUpdateNoteViewM
     public void onClick(View v) {
         if(v.equals(getBinding().btnSave)){
             note = getBinding().getViewModel();
+            showLoading();
             getViewModel().getCategory(note).observe(InsertUpdateNoteActivity.this, new Observer<String>() {
                 @Override
                 public void onChanged(@Nullable String s) {
@@ -59,6 +60,10 @@ public class InsertUpdateNoteActivity extends BaseActivity<InsertUpdateNoteViewM
                             });
                         }
                     }
+                    else{
+                        Toast.makeText(InsertUpdateNoteActivity.this, "Error. Please try again", Toast.LENGTH_SHORT).show();
+                        dismissLoading();
+                    }
                 }
             });
         }
@@ -66,9 +71,13 @@ public class InsertUpdateNoteActivity extends BaseActivity<InsertUpdateNoteViewM
 
     private void checkResponse(boolean aBoolean)
     {
+        dismissLoading();
         if(aBoolean){
             Toast.makeText(this, type + " SUCCESS", Toast.LENGTH_SHORT).show();
             finish();
+        }
+        else{
+            Toast.makeText(InsertUpdateNoteActivity.this, "Error. Please try again", Toast.LENGTH_SHORT).show();
         }
     }
 

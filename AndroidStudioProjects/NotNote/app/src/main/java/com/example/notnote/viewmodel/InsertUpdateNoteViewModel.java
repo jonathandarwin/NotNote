@@ -5,6 +5,7 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.content.Context;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.example.notnote.common.APIHandler;
@@ -52,8 +53,8 @@ public class InsertUpdateNoteViewModel extends ViewModel {
     }
 
     private boolean checkInput(Note note){
-        if(note.getTitle() == null || note.getTitle().equals("") ||
-            note.getDescription() == null || note.getDescription().equals("")){
+        if(note.getTitle() == null || note.getTitle().equals("") || note.getTitle().equals(null) ||
+            note.getDescription() == null || note.getDescription().equals("") || note.getDescription().equals(null)){
             Toast.makeText(context, "Please input title and description!", Toast.LENGTH_SHORT).show();
             return false;
         }
